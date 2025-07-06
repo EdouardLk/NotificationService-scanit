@@ -16,16 +16,14 @@ const transporter = nodemailer.createTransport({
 exports.sendVerificationEmail = async (req, res) => {
   try {
     
-    // décoder l'id du user contenu dans le body pour pouvoir,
-    console.log(req.body);
-
+    //console.log(req.body);
 
     let mailOptions = {
       from: process.env.GMAIL_EMAIL, // expediteur (le nôtre)
       to: req.body.email, // email destinataire
       subject: req.body.subject || "Création de votre compte",
       text: req.body.text,
-      html: verifMailTemplate(req.body.userToken)
+      html: verifMailTemplate(req.body.token)
     };
 
     //console.log(mailOptions);
@@ -335,7 +333,7 @@ function verifMailTemplate (targetUserToken){
                                                   <tbody>
                                                     <tr>
                                                       <td align="center" bgcolor="#1E493D" class="inner-td" style="border-radius:6px; font-size:16px; text-align:left; background-color:inherit;">
-                                                        <a href="${process.env.FRONTEND_URL}/confirm?userToken=${targetUserToken}" style="background-color:#1E493D; border:0px solid #333333; border-color:#333333; border-radius:4px; border-width:0px; color:#ffffff; display:inline-block; font-size:18px; font-weight:700; letter-spacing:0px; line-height:40px; padding:8px 16px 8px 16px; text-align:center; text-decoration:none; border-style:solid; font-family:arial,helvetica,sans-serif;"
+                                                        <a href="${process.env.FRONTEND_URL}/email/confirm?userToken=${targetUserToken}" style="background-color:#1E493D; border:0px solid #333333; border-color:#333333; border-radius:4px; border-width:0px; color:#ffffff; display:inline-block; font-size:18px; font-weight:700; letter-spacing:0px; line-height:40px; padding:8px 16px 8px 16px; text-align:center; text-decoration:none; border-style:solid; font-family:arial,helvetica,sans-serif;"
                                                         target="_blank">Confirmer mon addresse email</a>
                                                       </td>
                                                     </tr>
