@@ -25,17 +25,14 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-    res.send("✅ Serveur Express fonctionne !");
+    res.send("✅ Serveur Notifications fonctionne !");
 });
 
 // 🚏 Importer les routes
 const emailRoutes = require('./routes/email.routes');
-app.use('/email', emailRoutes);
+app.use('/api/email', emailRoutes);
 
 
-app.get("/api/ping", (req, res) => {
-    res.json({message :"✅ Serveur d'Emailing fonctionne !"});
-});
 
 
 module.exports = app;
