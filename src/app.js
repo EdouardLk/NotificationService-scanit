@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 
 // 🚏 Importer les routes
 const emailRoutes = require('./routes/email.routes');
-app.use('/api/email', emailRoutes);
+app.use('/email', emailRoutes);
 
 
 app.get("/api/ping", (req, res) => {
