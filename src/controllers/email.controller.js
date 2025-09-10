@@ -70,3 +70,33 @@ exports.sendNewsletter = async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 }
+
+
+exports.sendBillingConfirmation = async (req, res) => {
+  try {
+    
+    console.log('Emails destinataires:', req.body.email);
+
+    const mailOptions = {
+      from: process.env.GMAIL_EMAIL,
+      to:  req.body.email,
+      subject: req.body.subject,
+      text: req.body.text,
+      html: req.body.html
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Erreur d\'envoi de newsletter:', error);
+        res.status(500).json(error);
+      } else {
+        console.log('Newsletter envoyée avec succès:', info.response);
+        res.status(200).json(info.response);
+      }
+    });
+  }
+  catch (e) {
+    console.error("Erreur dans sendNewsletter:", e);
+    res.status(500).json({ error: e.message });
+  }
+}
