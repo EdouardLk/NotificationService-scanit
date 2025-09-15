@@ -1,18 +1,17 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 const verificationEmailTemplate = require('../templates/verificationEmail');
+const invoiceEmailTemplate = require('../templates/bill');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.GMAIL_EMAIL,
-    pass: process.env.GMAIL_EMAIL_PASSWORD
-  },
-  tls: {
-    rejectUnauthorized: false // ⚠️ Ne pas utiliser en prod avec des données sensibles
+    pass: process.env.GMAIL_EMAIL_APPLICATION_PASSWORD
   }
 });
 
+// à la suite d'une inscription
 exports.sendVerificationEmail = async (req, res) => {
   try {
     console.log('Tentative d\'envoi d\'email de vérification');
@@ -42,6 +41,7 @@ exports.sendVerificationEmail = async (req, res) => {
   }
 };
 
+// pour les abonnées a la newsletter
 exports.sendNewsletter = async (req, res) => {
   try {
     console.log('Tentative d\'envoi de newsletter');
@@ -71,32 +71,32 @@ exports.sendNewsletter = async (req, res) => {
   }
 }
 
-
+// envoi de facture après achat
 exports.sendBillingConfirmation = async (req, res) => {
   try {
     
-    console.log('Emails destinataires:', req.body.email);
-
+    console.log('Emails destinataire:', req.body);
+    return res.status(200).json({ error: "oki" });
     const mailOptions = {
       from: process.env.GMAIL_EMAIL,
       to:  req.body.email,
-      subject: req.body.subject,
+      subject: `Votre commande Scan-it ! [${req.body.productName}]` ,
       text: req.body.text,
-      html: req.body.html
+      html: invoiceEmailTemplate(req.body.invoice_url)
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.error('Erreur d\'envoi de newsletter:', error);
+        console.error('Erreur d\'envoi de la facture:', error);
         res.status(500).json(error);
       } else {
-        console.log('Newsletter envoyée avec succès:', info.response);
+        console.log('Facture envoyée avec succès:', info.response);
         res.status(200).json(info.response);
       }
     });
   }
   catch (e) {
-    console.error("Erreur dans sendNewsletter:", e);
+    console.error('Erreur d\'envoi de la facture:',  e);
     res.status(500).json({ error: e.message });
   }
 }
